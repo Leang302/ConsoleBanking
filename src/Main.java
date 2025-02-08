@@ -3,18 +3,20 @@ import org.nocrala.tools.texttablefmt.CellStyle;
 import org.nocrala.tools.texttablefmt.ShownBorders;
 import org.nocrala.tools.texttablefmt.Table;
 
-import java.util.Scanner;
 
 public class Main {
 
     public static void main(String[] args) {
 
-        Account checkingAccount = new CheckingAccount();
-        Account savingAccount = new SavingAccount();
+//        Account checkingAccount = new CheckingAccount();
+//        Account savingAccount = new SavingAccount();
+        Account checkingAccount = new CheckingAccount("leang", "01-01-2023", "male", "012123123", 0);
+        Account savingAccount = new SavingAccount("leang", "01-01-2023", "male", "012123123", 0);
         do {
             printMenu();
             int choice = Integer.parseInt(HELPER.getInputAndValidate("➡️Choose an option: ", "Choice cannot be empty", "[1-7]", "Please enter a valid choice (1-7)"));
             switch (choice) {
+                //create account
                 case 1:
                     createAccount:
                     do {
@@ -36,6 +38,7 @@ public class Main {
                         }
                     } while (true);
                     break;
+                //deposit money
                 case 2:
                     deposit:
                     do {
@@ -45,40 +48,115 @@ public class Main {
                         int depositChoice = Integer.parseInt(HELPER.getInputAndValidate("➡️ Choose an options: ", "Option cannot be empty", "[1-3]", "Please enter a valid choice (1-3)"));
                         double amount;
                         double oldBalance;
+                        double totalAmount;
                         switch (depositChoice) {
                             case 1:
-                                if (!HELPER.accountIsCreated(checkingAccount)) {
+                                if (!HELPER.checkIsAccountCreated(checkingAccount)) {
                                     break deposit;
                                 }
                                 do {
                                     oldBalance = checkingAccount.getBalance();
-                                    amount = Double.valueOf(HELPER.getInputAndValidate("➡️ Enter Money to deposit: ", "Deposit Amount cannot be empty", "\\d+.?\\d*", "Wrong input format"));
-                                    checkingAccount.deposit(amount);
-                                } while (oldBalance == checkingAccount.getBalance());
-                                System.out.println(" ".repeat(24)+"⬇️"+" ".repeat(24));
-                                System.out.println(" ".repeat(24)+"Saving Account"+" ".repeat(24));
+                                    amount = Double.parseDouble(HELPER.getInputAndValidate("➡️ Enter Money to deposit: ", "Deposit Amount cannot be empty", "\\d+.?\\d*", "Wrong input format"));
+                                    totalAmount = checkingAccount.deposit(amount);
+                                } while (oldBalance == totalAmount);
+                                HELPER.displayWithdrawOrDepositReceipt(amount, totalAmount, "Checking account","Recieved");
                                 break;
                             case 2:
-                                if (!HELPER.accountIsCreated(savingAccount)) {
+                                if (!HELPER.checkIsAccountCreated(savingAccount)) {
                                     break deposit;
                                 }
                                 do {
-                                    oldBalance = checkingAccount.getBalance();
-                                    amount = Double.valueOf(HELPER.getInputAndValidate("➡️ Enter Money to deposit: ", "Deposit Amount cannot be empty", "\\d+.?\\d*", "Wrong input format"));
-                                    checkingAccount.deposit(amount);
-                                } while (oldBalance == checkingAccount.getBalance());
+                                    oldBalance = savingAccount.getBalance();
+                                    amount = Double.parseDouble(HELPER.getInputAndValidate("➡️ Enter Money to deposit: ", "Deposit Amount cannot be empty", "\\d+.?\\d*", "Wrong input format"));
+                                    totalAmount = savingAccount.deposit(amount);
+                                } while (oldBalance == totalAmount);
+                                HELPER.displayWithdrawOrDepositReceipt(amount, totalAmount, "Saving account","Recieved");
                                 break;
                             case 3:
                                 break deposit;
                         }
+                        HELPER.printSuccessMessage("\nDeposit successful!\n");
                     } while (true);
                     break;
+                //withdraw money
                 case 3:
-                    System.out.println("\n" + ">".repeat(16) + " Deposit Money " + ">".repeat(16));
-                    String[] options = {"Checking Account", "Saving Account", "Back"};
-                    HELPER.printOptionList(options);
+                    withdraw:
+                    do {
+                        System.out.println("\n" + ">".repeat(16) + " Withdraw Money " + ">".repeat(16));
+                        String[] options = {"Checking Account", "Saving Account", "Back"};
+                        HELPER.printOptionList(options);
+                        int withdrawChoice = Integer.parseInt(HELPER.getInputAndValidate("➡️ Choose an options: ", "Option cannot be empty", "[1-3]", "Please enter a valid choice (1-3)"));
+                        double amount;
+                        double oldBalance;
+                        double totalAmount;
+                        switch (withdrawChoice) {
+                            case 1:
+                                if (!HELPER.checkIsAccountCreated(checkingAccount)) {
+                                    break withdraw;
+                                } else if (checkingAccount.getBalance() == 0) {
+                                    HELPER.printErrorMessage("Please deposit your money first!");
+                                    System.out.println("Press any key to go back to menu...");
+                                    HELPER.sc.nextLine();
+                                    break withdraw;
+                                }
+                                do {
+                                    oldBalance = checkingAccount.getBalance();
+                                    amount = Double.parseDouble(HELPER.getInputAndValidate("➡️ Enter Money to withdraw: ", "Withdraw Amount cannot be empty", "\\d+.?\\d*", "Wrong input format"));
+                                    totalAmount = checkingAccount.withdraw(amount);
+                                } while (oldBalance == totalAmount);
+                                HELPER.displayWithdrawOrDepositReceipt(amount, totalAmount, "Checking account","Withdraw");
+                                break;
+                            case 2:
+                                if (!HELPER.checkIsAccountCreated(savingAccount)) {
+                                    break withdraw;
+                                } else if (savingAccount.getBalance() == 0) {
+                                    HELPER.printErrorMessage("Please deposit your money first!");
+                                    System.out.println("Press any key to go back to menu...");
+                                    HELPER.sc.nextLine();
+                                    break withdraw;
+                                }
+                                do {
+                                    oldBalance = savingAccount.getBalance();
+                                    amount = Double.parseDouble(HELPER.getInputAndValidate("➡️ Enter Money to withdraw: ", "Withdraw Amount cannot be empty", "\\d+.?\\d*", "Wrong input format"));
+                                    totalAmount = savingAccount.withdraw(amount);
+                                    if (totalAmount == oldBalance) {
+                                        String continueDeposit = HELPER.getInputAndValidate("➡️ Do you want to continue? (y or n): ", "Cannot be empty", "[ynYN]", "Invalid choice! Please input (y/n)");
+                                        if (continueDeposit.equalsIgnoreCase("n")) {
+                                            continue withdraw;
+                                        }
+                                    }
+                                } while (oldBalance == totalAmount);
+                                HELPER.displayWithdrawOrDepositReceipt(amount, totalAmount, "Saving account","Withdraw");
+                                break;
+                            case 3:
+                                break withdraw;
+                        }
+                        HELPER.printSuccessMessage("\nWithdraw successful!\n");
+                    } while (true);
                     break;
+                //transfer money
                 case 4:
+                    transfer:
+                    do {
+                        if (!HELPER.checkIsAccountCreated(checkingAccount) || !HELPER.checkIsAccountCreated(savingAccount)) {
+                            break transfer;
+                        }
+                        System.out.println("\n" + ">".repeat(16) + " Transfer money " + ">".repeat(16));
+                        String[] options = {"Checking account -> Saving account", "Saving Account -> Checking account", "Back"};
+                        HELPER.printOptionList(options);
+                        int transferChoice = Integer.parseInt(HELPER.getInputAndValidate("➡️ Choose an options: ", "Option cannot be empty", "[1-3]", "Please enter a valid choice (1-3)"));
+                        double amount;
+                        switch (transferChoice) {
+                            case 1:
+                                amount = Double.parseDouble(HELPER.getInputAndValidate("Enter money to transfer: ", "Amount cannot be empty", "\\d+.?\\d*", "Wrong input format"));
+                                checkingAccount.transfer(amount, savingAccount);
+                                break;
+                            case 2:
+                                break;
+                            case 3:
+                                break transfer;
+                        }
+                    } while (true);
                     break;
                 case 5:
                     break;
@@ -91,6 +169,7 @@ public class Main {
             }
         } while (true);
     }
+
 
     public static void printMenu() {
         Table t = new Table(1, BorderStyle.DESIGN_FORMAL, ShownBorders.SURROUND);

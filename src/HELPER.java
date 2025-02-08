@@ -1,4 +1,5 @@
 
+import java.text.DecimalFormat;
 import java.util.Scanner;
 
 public interface HELPER {
@@ -8,6 +9,7 @@ public interface HELPER {
     String YELLOW = "\u001B[33m";
     String RED = "\u001B[31m";
     Scanner sc = new Scanner(System.in);
+    DecimalFormat df = new DecimalFormat("$#,##0.00");
      static String getInputAndValidate(String prompt, String emptyMsg, String regex, String errorRegex) {
         Scanner sc = new Scanner(System.in);
         String value;
@@ -48,7 +50,7 @@ public interface HELPER {
     static void printErrorMessage(String msg){
         System.out.println(RED+msg+RESET);
     }
-    public static void printOptionList(String[] options) {
+    static void printOptionList(String[] options) {
         System.out.println(HELPER.BLUE);
         for (int i = 0; i < options.length; i++) {
             System.out.println(i + 1 + ". " + options[i]);
@@ -80,13 +82,21 @@ public interface HELPER {
         System.out.println("=".repeat(56));
         HELPER.printSuccessMessage("Your "+accountType+" has been created successfully");
     }
-    static boolean accountIsCreated(Account account){
+    static boolean checkIsAccountCreated(Account account){
         if(!account.isActive){
-            HELPER.printErrorMessage("Please create an account first");
+            HELPER.printErrorMessage("Please create account first");
             System.out.println("Press any key to go back to menu...");
             sc.nextLine();
             return false;
         }
         return true;
     }
+    static void displayWithdrawOrDepositReceipt(double recievedAmount, double totalAmount, String accountType, String operation) {
+        System.out.println(" ".repeat(24) + "⬇️" + " ".repeat(24));
+        System.out.println(" ".repeat(16) + accountType + " ".repeat(24)+"\n");
+        System.out.println((operation + " ".repeat(29) + HELPER.df.format(recievedAmount)));
+        System.out.println("Total Amount:" + " ".repeat(25) + HELPER.df.format(totalAmount));
+        System.out.println("=".repeat(50));
+    }
+
 }

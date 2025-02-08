@@ -20,6 +20,8 @@ public abstract class Account {
         this.gender = gender;
         this.phoneNumber = phoneNumber;
         this.balance = balance;
+        //to be deleted
+        this.isActive = true;
     }
 
     public int getId() {
