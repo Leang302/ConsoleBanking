@@ -1,6 +1,13 @@
 
+import org.nocrala.tools.texttablefmt.BorderStyle;
+import org.nocrala.tools.texttablefmt.CellStyle;
+import org.nocrala.tools.texttablefmt.ShownBorders;
+import org.nocrala.tools.texttablefmt.Table;
+
 import java.text.DecimalFormat;
+import java.util.Random;
 import java.util.Scanner;
+import java.util.regex.Matcher;
 
 public interface HELPER {
     String RESET = "\u001B[0m";
@@ -10,7 +17,9 @@ public interface HELPER {
     String RED = "\u001B[31m";
     Scanner sc = new Scanner(System.in);
     DecimalFormat df = new DecimalFormat("$#,##0.00");
-     static String getInputAndValidate(String prompt, String emptyMsg, String regex, String errorRegex) {
+
+
+    static String getInputAndValidate(String prompt, String emptyMsg, String regex, String errorRegex) {
         Scanner sc = new Scanner(System.in);
         String value;
         while (true) {
@@ -29,7 +38,7 @@ public interface HELPER {
         return value;
     }
 
-     static String getInputAndValidate(String prompt, String emptyMsg) {
+    static String getInputAndValidate(String prompt, String emptyMsg) {
         Scanner sc = new Scanner(System.in);
         String value;
         while (true) {
@@ -44,27 +53,32 @@ public interface HELPER {
         ;
         return value;
     }
-    static void printSuccessMessage(String msg){
-        System.out.println(GREEN+msg+RESET);
+
+    static void printSuccessMessage(String msg) {
+        System.out.println(GREEN + msg + RESET);
     }
-    static void printErrorMessage(String msg){
-        System.out.println(RED+msg+RESET);
+
+    static void printErrorMessage(String msg) {
+        System.out.println(RED + msg + RESET);
     }
+
+    //print option list for each menu
     static void printOptionList(String[] options) {
-        System.out.println(HELPER.BLUE);
         for (int i = 0; i < options.length; i++) {
-            System.out.println(i + 1 + ". " + options[i]);
+            System.out.println(YELLOW + "[" + (i + 1) + "]" + RESET + ". " + BLUE + options[i] + RESET);
         }
         System.out.println(HELPER.RESET);
         System.out.println("-".repeat(51));
     }
-    static void addAccountInfo(Account account,String accountType){
+
+    //add account info for both checking and saving account
+    static void addAccountInfo(Account account, String accountType) {
         String name;
         String date;
         String gender;
         String phoneNumber;
-        if (account.isActive){
-            HELPER.printErrorMessage("Your "+accountType+" is already in use!");
+        if (account.isActive()) {
+            HELPER.printErrorMessage("Your " + accountType + " is already in use!");
             return;
         }
         System.out.println("\n\n\n" + ">".repeat(16) + " Account Information " + ">".repeat(16));
@@ -79,11 +93,14 @@ public interface HELPER {
         phoneNumber = HELPER.getInputAndValidate("➡️Enter phone number: ", "Phone number cannot be empty", "^0[1-9][0-9]{7,8}", "Please enter a valid phone number format(eg 012123123)");
         account.setPhoneNumber(phoneNumber);
         account.setActive(true);
+        account.setId(HELPER.generateID());
         System.out.println("=".repeat(56));
-        HELPER.printSuccessMessage("Your "+accountType+" has been created successfully");
+        HELPER.printSuccessMessage("Your " + accountType + " has been created successfully");
     }
-    static boolean checkIsAccountCreated(Account account){
-        if(!account.isActive){
+
+    //check if account is created
+    static boolean checkIsAccountCreated(Account account) {
+        if (!account.isActive) {
             HELPER.printErrorMessage("Please create account first");
             System.out.println("Press any key to go back to menu...");
             sc.nextLine();
@@ -91,12 +108,33 @@ public interface HELPER {
         }
         return true;
     }
-    static void displayWithdrawOrDepositReceipt(double recievedAmount, double totalAmount, String accountType, String operation) {
+
+    /*print withdraw or deposit receipt
+    Operation
+    -Deposit: received
+    -Withdraw: withdraw
+    * */
+    static void displayWithdrawOrDepositReceipt(double amount, Account account, String accountType, String operation) {
         System.out.println(" ".repeat(24) + "⬇️" + " ".repeat(24));
-        System.out.println(" ".repeat(16) + accountType + " ".repeat(24)+"\n");
-        System.out.println((operation + " ".repeat(29) + HELPER.df.format(recievedAmount)));
-        System.out.println("Total Amount:" + " ".repeat(25) + HELPER.df.format(totalAmount));
+        System.out.println(" ".repeat(16) + BLUE + accountType + RESET + " ".repeat(24) + "\n");
+        System.out.println((BLUE + operation + RESET + " ".repeat(30) + HELPER.df.format(amount)));
+        System.out.println(BLUE + "Total Amount:" + RESET + " ".repeat(25) + HELPER.df.format(account.getBalance()));
         System.out.println("=".repeat(50));
     }
 
+    //print main menu
+    static void printMenu() {
+        Table t = new Table(1, BorderStyle.DESIGN_FORMAL, ShownBorders.SURROUND);
+        CellStyle align = new CellStyle(CellStyle.HorizontalAlign.center);
+        t.setColumnWidth(0, 50, 77);
+        t.addCell(BLUE + "Online Banking System" + RESET, align);
+        System.out.println(t.render());
+        String[] options = {"Create Account", "Deposit Money", "Withdraw Money", "Transfer Money", "Display Account Information", "Delete Account", "Exit"};
+        HELPER.printOptionList(options);
+    }
+
+    //generate id for account
+    static int generateID() {
+        return (int) ((Math.random() * 1000) + 10000);
+    }
 }

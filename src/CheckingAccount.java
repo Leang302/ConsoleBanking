@@ -18,7 +18,7 @@ public class CheckingAccount extends Account {
             return balance;
         }
         HELPER.printErrorMessage("Amount need to be bigger than 0");
-        return 0;
+        return balance;
     }
 
     @Override
@@ -31,7 +31,7 @@ public class CheckingAccount extends Account {
             balance -= amount;
             return balance;
         }
-        HELPER.printSuccessMessage("Invalid amount");
+        HELPER.printErrorMessage("Invalid amount");
         return balance;
     }
 
@@ -40,25 +40,37 @@ public class CheckingAccount extends Account {
         if (amount > 0) {
             if (amount > balance) {
                 HELPER.printErrorMessage("Insufficient amount");
-                return 0;
+                return balance;
             }
             balance -= amount;
-            System.out.println("\n" + ">".repeat(16) + " Saving Account " + "<".repeat(16));
-            System.out.println("Transfered:" + HELPER.df.format(amount));
-            System.out.println("From:" + "Checking Account with ID: " + id);
-            System.out.println("To:" + "Saving Account with ID: " + targetAcount.getId());
-            System.out.println("Total Remain: " + " ".repeat(25) + HELPER.df.format(balance));
-            System.out.println("-".repeat(50));
             targetAcount.deposit(amount);
-            return amount;
+            return balance;
         }
         HELPER.printErrorMessage("Invalid amount");
-        return 0;
+        return balance;
     }
 
     @Override
-    public double displayAccountInfo() {
-        return 0;
+    public void displayAccountInfo() {
+        if (isActive()) {
+            System.out.println("\n\n" + ">".repeat(16) + HELPER.BLUE + "Checking account" + HELPER.RESET + ">".repeat(16));
+            System.out.println(HELPER.BLUE + "Account type:" + HELPER.RESET + " Checking Account");
+            System.out.println(HELPER.BLUE + "Account Number: " + HELPER.RESET + id);
+            System.out.println(HELPER.BLUE + "User name: " + HELPER.RESET + name);
+            System.out.println(HELPER.BLUE + "Date of Birth: " + HELPER.RESET + dob);
+            System.out.println(HELPER.BLUE + "Gender: " + HELPER.RESET + gender);
+            System.out.println(HELPER.BLUE + "Phone Number: " + HELPER.RESET + phoneNumber);
+            System.out.println(HELPER.BLUE + "Balance: " + HELPER.RESET + HELPER.df.format(balance));
+        }
     }
 
+    @Override
+    void transferReciept(Account receiver,double amount) {
+        System.out.println("\n\n\n" + ">".repeat(16) + HELPER.BLUE+"Checking Account" +HELPER.RESET+ ">".repeat(16));
+        System.out.println(HELPER.BLUE+"Transfered:" +HELPER.RESET+ " ".repeat(30) + HELPER.df.format(amount));
+        System.out.println(HELPER.BLUE+"From:" +HELPER.RESET+" ".repeat(12)+ "Checking Account with ID: " + id);
+        System.out.println(HELPER.BLUE+"To:"+HELPER.RESET +" ".repeat(12)+  "Saving Account with ID: " + receiver.getId());
+        System.out.println(HELPER.BLUE+"Total remain: "+HELPER.RESET + " ".repeat(27) + HELPER.df.format(balance));
+        System.out.println("-".repeat(48));
+    }
 }

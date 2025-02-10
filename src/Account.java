@@ -1,3 +1,4 @@
+import java.time.LocalDate;
 import java.util.Random;
 
 public abstract class Account {
@@ -21,6 +22,7 @@ public abstract class Account {
         this.phoneNumber = phoneNumber;
         this.balance = balance;
         //to be deleted
+        this.id=12312;
         this.isActive = true;
     }
 
@@ -49,16 +51,25 @@ public abstract class Account {
     }
 
     public boolean setDob(String dob) {
+        int currentYear = LocalDate.now().getYear();
         String[] dates = dob.split("-");
-        int day = Integer.valueOf(dates[0]);
-        int month = Integer.valueOf(dates[1]);
-        int year = Integer.valueOf(dates[2]);
-        if (day > 31 || month > 12) {
-            System.out.println(HELPER.RED + "Invalid date" + HELPER.RESET);
+        int day = Integer.parseInt(dates[0]);
+        int month = Integer.parseInt(dates[1]);
+        int year = Integer.parseInt(dates[2]);
+        if (year > currentYear - 150 && year <= currentYear - 16) {
+            if (month >= 1 && month <= 12) {
+                //leap year validation
+                int daysInMonth = LocalDate.of(year, month, 1).lengthOfMonth();
+                if (day >= 1 && day <= daysInMonth) {
+                    this.dob = dob;
+                    return true;
+                }
+            }
+            HELPER.printErrorMessage("Invalid date.");
             return false;
         }
-        this.dob = dob;
-        return true;
+        HELPER.printErrorMessage("Age must be between 16-150 years.");
+        return false;
     }
 
     public String getGender() {
@@ -66,7 +77,7 @@ public abstract class Account {
     }
 
     public boolean setGender(String gender) {
-        if (gender.equalsIgnoreCase(Gender.FEMALE.value) || gender.equalsIgnoreCase(Gender.MALE.value)) {
+        if (gender.equalsIgnoreCase("male") || gender.equalsIgnoreCase("female")) {
             this.gender = gender;
             return true;
         }
@@ -94,12 +105,26 @@ public abstract class Account {
         this.id = id;
     }
 
+    public void deleteAccount(Account accToDelete, Account receiver) {
+        double totalAmount = receiver.getBalance() + accToDelete.getBalance();
+        //send money to receiver
+        receiver.setBalance(totalAmount);
+        //reset the account to be deleted
+        accToDelete.setBalance(0);
+        accToDelete.setActive(false);
+
+    }
+
+    //abstract method
+
+    abstract void transferReciept(Account receiver, double amount);
+
     abstract double deposit(double amount);
 
     abstract double withdraw(double amount);
 
     abstract double transfer(double amount, Account targetAcount);
 
-    abstract double displayAccountInfo();
+    abstract void displayAccountInfo();
 
 }
