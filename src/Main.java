@@ -2,10 +2,9 @@ public class Main {
 
     public static void main(String[] args) {
 
-//        Account checkingAccount = new CheckingAccount();
-//        Account savingAccount = new SavingAccount();
-        Account checkingAccount = new CheckingAccount("leang", "01-01-2023", "male", "012123123", 0);
-        Account savingAccount = new SavingAccount("leang", "01-01-2023", "male", "012123123", 0);
+        Account checkingAccount = new CheckingAccount();
+        Account savingAccount = new SavingAccount();
+
         do {
             HELPER.printMenu();
             int choice = Integer.parseInt(HELPER.getInputAndValidate("➡️Choose an option: ", "Choice cannot be empty", "[1-7]", "Please enter a valid choice (1-7)"));
@@ -50,7 +49,7 @@ public class Main {
                                 }
                                 do {
                                     oldBalance = checkingAccount.getBalance();
-                                    amount = Double.parseDouble(HELPER.getInputAndValidate("➡️ Enter Money to deposit: ", "Deposit Amount cannot be empty", "\\d+.?\\d*", "Wrong input format"));
+                                    amount = Double.parseDouble(HELPER.getInputAndValidate("➡️ Enter Money to deposit: ", "Deposit Amount cannot be empty", "^\\d+\\.?\\d*$", "Wrong input format"));
                                     totalAmount = checkingAccount.deposit(amount);
                                 } while (oldBalance == totalAmount);
                                 HELPER.displayWithdrawOrDepositReceipt(amount, checkingAccount, "Checking account", "Received");
@@ -61,7 +60,7 @@ public class Main {
                                 }
                                 do {
                                     oldBalance = savingAccount.getBalance();
-                                    amount = Double.parseDouble(HELPER.getInputAndValidate("➡️ Enter Money to deposit: ", "Deposit Amount cannot be empty", "\\d+.?\\d*", "Wrong input format"));
+                                    amount = Double.parseDouble(HELPER.getInputAndValidate("➡️ Enter Money to deposit: ", "Deposit Amount cannot be empty", "^\\d+\\.?\\d*$", "Wrong input format"));
                                     totalAmount = savingAccount.deposit(amount);
                                 } while (oldBalance == totalAmount);
                                 HELPER.displayWithdrawOrDepositReceipt(amount, savingAccount, "Saving account", "Recieved");
@@ -95,7 +94,7 @@ public class Main {
                                 }
                                 do {
                                     oldBalance = checkingAccount.getBalance();
-                                    amount = Double.parseDouble(HELPER.getInputAndValidate("➡️ Enter Money to withdraw: ", "Withdraw Amount cannot be empty", "\\d+.?\\d*", "Wrong input format"));
+                                    amount = Double.parseDouble(HELPER.getInputAndValidate("➡️ Enter Money to withdraw: ", "Withdraw Amount cannot be empty", "^\\d+\\.?\\d*$", "Wrong input format"));
                                     totalAmount = checkingAccount.withdraw(amount);
                                     if (totalAmount == oldBalance) {
                                         String continueDeposit = HELPER.getInputAndValidate("➡️ Do you want to continue? (y or n): ", "Cannot be empty", "[ynYN]", "Invalid choice! Please input (y/n)");
@@ -117,7 +116,7 @@ public class Main {
                                 }
                                 do {
                                     oldBalance = savingAccount.getBalance();
-                                    amount = Double.parseDouble(HELPER.getInputAndValidate("➡️ Enter Money to withdraw: ", "Withdraw Amount cannot be empty", "\\d+.?\\d*", "Wrong input format"));
+                                    amount = Double.parseDouble(HELPER.getInputAndValidate("➡️ Enter Money to withdraw: ", "Withdraw Amount cannot be empty", "^\\d+\\.?\\d*$", "Wrong input format"));
                                     totalAmount = savingAccount.withdraw(amount);
                                     if (totalAmount == oldBalance) {
                                         String continueDeposit = HELPER.getInputAndValidate("➡️ Do you want to continue? (y or n): ", "Cannot be empty", "[ynYN]", "Invalid choice! Please input (y/n)");
@@ -139,8 +138,8 @@ public class Main {
                     transfer:
                     do {
                         if (!checkingAccount.isActive() || !savingAccount.isActive()) {
-                            HELPER.printErrorMessage("You must 2 account to access this feature!\n");
-                            break transfer;
+                            HELPER.printErrorMessage("You must have 2 account to access this feature!\n");
+                            break;
                         }
                         System.out.println("\n" + ">".repeat(16) +HELPER.BLUE+ " Transfer money " +HELPER.RESET+ ">".repeat(16));
                         String[] options = {"Checking account -> Saving account", "Saving Account -> Checking account", "Back"};
@@ -157,7 +156,7 @@ public class Main {
                                 }
                                 do {
                                     oldAmount = checkingAccount.getBalance();
-                                    amount = Double.parseDouble(HELPER.getInputAndValidate("Enter money to transfer: ", "Amount cannot be empty", "\\d+.?\\d*", "Wrong input format"));
+                                    amount = Double.parseDouble(HELPER.getInputAndValidate("Enter money to transfer: ", "Amount cannot be empty", "^\\d+\\.?\\d*$", "Wrong input format"));
                                     totalAmountLeft = checkingAccount.transfer(amount, savingAccount);
                                 } while (oldAmount == totalAmountLeft);
                                 checkingAccount.transferReciept(savingAccount, amount);
@@ -171,7 +170,7 @@ public class Main {
                                 }
                                 do {
                                     oldAmount = savingAccount.getBalance();
-                                    amount = Double.parseDouble(HELPER.getInputAndValidate("Enter money to transfer: ", "Amount cannot be empty", "\\d+.?\\d*", "Wrong input format"));
+                                    amount = Double.parseDouble(HELPER.getInputAndValidate("Enter money to transfer: ", "Amount cannot be empty", "^\\d+\\.?\\d*$", "Wrong input format"));
                                     totalAmountLeft = savingAccount.transfer(amount, checkingAccount);
                                 } while (oldAmount == totalAmountLeft);
                                 savingAccount.transferReciept(checkingAccount, amount);

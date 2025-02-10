@@ -1,13 +1,5 @@
 public class SavingAccount extends Account {
     public static final double rate = 0.05;
-
-    public SavingAccount(String name, String dob, String gender, String phoneNumber, double balance) {
-        super(name, dob, gender, phoneNumber, balance);
-    }
-
-    public SavingAccount() {
-    }
-
     @Override
     public double deposit(double amount) {
         if (amount > 0) {
@@ -71,8 +63,8 @@ public class SavingAccount extends Account {
     void transferReciept(Account receiver, double amount) {
         System.out.println("\n\n\n" + ">".repeat(16) + HELPER.RESET + "Saving Account" + HELPER.RESET + ">".repeat(16));
         System.out.println(HELPER.BLUE + "Transfered:" + HELPER.RESET + " ".repeat(30) + HELPER.df.format(amount));
-        System.out.println(HELPER.BLUE + "From:" + HELPER.RESET + " ".repeat(12) + "Saving Account with ID: " + id);
-        System.out.println(HELPER.BLUE + "To:" + HELPER.RESET + " ".repeat(12) + "Checking Account with ID: " + receiver.getId());
+        System.out.println(HELPER.BLUE + "From:" + HELPER.RESET + " ".repeat(13) + "Saving Account with ID: " + id);
+        System.out.println(HELPER.BLUE + "To:" + HELPER.RESET + " ".repeat(13) + "Checking Account with ID: " + receiver.getId());
         System.out.println(HELPER.BLUE + "Total remain: " + HELPER.RESET + " ".repeat(27) + HELPER.df.format(balance));
         System.out.println(HELPER.BLUE + "-".repeat(48));
     }

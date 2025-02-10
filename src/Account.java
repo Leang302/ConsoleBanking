@@ -15,17 +15,6 @@ public abstract class Account {
         id = random.nextInt(10000);
     }
 
-    public Account(String name, String dob, String gender, String phoneNumber, double balance) {
-        this.name = name;
-        this.dob = dob;
-        this.gender = gender;
-        this.phoneNumber = phoneNumber;
-        this.balance = balance;
-        //to be deleted
-        this.id=12312;
-        this.isActive = true;
-    }
-
     public int getId() {
         return id;
     }

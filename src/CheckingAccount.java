@@ -1,16 +1,4 @@
-import java.io.ByteArrayInputStream;
-
 public class CheckingAccount extends Account {
-
-
-    public CheckingAccount() {
-        super();
-    }
-
-    public CheckingAccount(String name, String dob, String gender, String phoneNumber, double balance) {
-        super(name, dob, gender, phoneNumber, balance);
-    }
-
     @Override
     public double deposit(double amount) {
         if (amount > 0) {
@@ -69,7 +57,7 @@ public class CheckingAccount extends Account {
         System.out.println("\n\n\n" + ">".repeat(16) + HELPER.BLUE+"Checking Account" +HELPER.RESET+ ">".repeat(16));
         System.out.println(HELPER.BLUE+"Transfered:" +HELPER.RESET+ " ".repeat(30) + HELPER.df.format(amount));
         System.out.println(HELPER.BLUE+"From:" +HELPER.RESET+" ".repeat(12)+ "Checking Account with ID: " + id);
-        System.out.println(HELPER.BLUE+"To:"+HELPER.RESET +" ".repeat(12)+  "Saving Account with ID: " + receiver.getId());
+        System.out.println(HELPER.BLUE+"To:"+HELPER.RESET +" ".repeat(16)+  "Saving Account with ID: " + receiver.getId());
         System.out.println(HELPER.BLUE+"Total remain: "+HELPER.RESET + " ".repeat(27) + HELPER.df.format(balance));
         System.out.println("-".repeat(48));
     }
